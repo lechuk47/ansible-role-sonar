@@ -1,6 +1,6 @@
 ---
 - name: Configure database {{ sonar_database_provider }}
-  include_tasks: "configure-database-{{ sonar_database_provider }}.yml"
+  include: "configure-database-{{ sonar_database_provider }}.yml"
 
 - name: Download Sonar.
   get_url:
