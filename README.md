@@ -52,7 +52,8 @@ JDBC settings for a connection to a MySQL database. Defaults presume the databas
 
   - geerlingguy.java
   - geerlingguy.mysql
-
+  - geerlingguy.postgres
+  
 ## Example Playbook
 
     - hosts: all
