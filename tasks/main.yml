@@ -20,7 +20,9 @@
     mv /usr/local/{{ sonar_version_directory }} /usr/local/sonar
     creates=/usr/local/sonar/COPYING
 
-- include: configure.yml
+- name: Configure sonar for {{ sonar_database_provider }}
+  include: "configure-sonar-{{ sonar_database_provider }}.yml"
+
 
 - name: Symlink sonar bin.
   file:

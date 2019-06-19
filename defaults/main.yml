@@ -30,5 +30,5 @@ sonar_psql_username: sonar
 sonar_psql_password: sonar
 
 sonar_psql_host: localhost
-sonar_psql_port: "3306"
+sonar_psql_port: "5432"
 sonar_psql_database: sonar
