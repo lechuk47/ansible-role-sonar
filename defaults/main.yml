@@ -15,7 +15,7 @@ sonar_group: sonar
 sonar_database_provider: mysql
 
 # Wether or not configure a local database
-sonar_configure_local_database: yes
+sonar_configure_local_database: true
 
 # MySQL database connection details.
 sonar_mysql_username: sonar

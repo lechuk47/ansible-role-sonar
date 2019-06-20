@@ -30,4 +30,3 @@
       line: "sonar.jdbc.url={{ sonar_jdbc_conn }}"
     - regexp: "^sonar.web.context"
       line: "sonar.web.context={{ sonar_web_context }}"
-

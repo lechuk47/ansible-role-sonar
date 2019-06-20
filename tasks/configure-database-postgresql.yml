@@ -1,5 +1,6 @@
 ---
-- postgresql_db:
+- name: Create PostgreSQL database
+  postgresql_db:
     name: "{{ sonar_psql_database }}"
   become: true
   become_user: "{{ postgresql_user }}"
@@ -22,4 +23,3 @@
     regex: "host {{ sonar_username }}.*"
     line: "host  {{ sonar_psql_database }} {{ sonar_username }} 127.0.0.1/32  md5"
     dest: "{{ postgresql_config_path }}/pg_hba.conf"
-

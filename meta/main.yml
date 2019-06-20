@@ -1,8 +1,8 @@
 ---
 dependencies:
   - geerlingguy.java
-  - { name: geerlingguy.mysql, when: sonar_database_provider == 'mysql' }
-  - { name: geerlingguy.postgresql, when: sonar_database_provider == 'psql' }
+  - {name: geerlingguy.mysql, when: sonar_database_provider == 'mysql'}
+  - {name: geerlingguy.postgresql, when: sonar_database_provider == 'psql'}
 
 galaxy_info:
   author: geerlingguy

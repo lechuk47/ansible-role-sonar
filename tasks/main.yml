@@ -7,7 +7,7 @@
   user:
     name: "{{ sonar_username }}"
     shell: /bin/false
-    create_home: no
+    create_home: true
 
 - name: Download Sonar.
   get_url:
@@ -40,36 +40,36 @@
   register: sonar_symlink
 
 - block:
-  - name: Add sonar as init script for service management.
-    file:
-      src: /usr/local/sonar/bin/linux-x86-64/sonar.sh
-      dest: /etc/init.d/sonar
-      state: link
+    - name: Add sonar as init script for service management.
+      file:
+        src: /usr/local/sonar/bin/linux-x86-64/sonar.sh
+        dest: /etc/init.d/sonar
+        state: link
 
-  - name: Ensure Sonar is running and set to start on boot.
-    service:
-      name: sonar
-      state: started
-      enabled: yes
+    - name: Ensure Sonar is running and set to start on boot.
+      service:
+        name: sonar
+        state: started
+        enabled: true
   when: "ansible_service_mgr != 'systemd'"
 
 - block:
-  - name: Copy SonarQube systemd unit file into place (for systemd systems).
-    template:
-      src: sonar.unit.j2
-      dest: /etc/systemd/system/sonar.service
-      owner: root
-      group: root
-      mode: 0755
-    register: systemd_service
+    - name: Copy SonarQube systemd unit file into place (for systemd systems).
+      template:
+        src: sonar.unit.j2
+        dest: /etc/systemd/system/sonar.service
+        owner: root
+        group: root
+        mode: 0755
+      register: systemd_service
 
-  - name: Copy SonarQube systemd unit file into place (for systemd systems).
-    systemd:
-      name: sonar
-      daemon_reload: yes
-      enabled: yes
-      state: started
-    when: systemd_service.changed
+    - name: Copy SonarQube systemd unit file into place (for systemd systems).
+      systemd:
+        name: sonar
+        daemon_reload: true
+        enabled: true
+        state: started
+      when: systemd_service.changed
 
   when: "ansible_service_mgr == 'systemd'"
 
