@@ -26,7 +26,7 @@
 
 - name: Move Sonar into place.
   command: >
-    mv -p /usr/local/{{ sonar_version_directory }} /usr/local/sonar
+    mv /usr/local/{{ sonar_version_directory }} /usr/local/sonar
     creates=/usr/local/sonar/COPYING
 
 - name: Configure sonar for {{ sonar_database_provider }}
