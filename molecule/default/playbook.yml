@@ -20,6 +20,7 @@
     - role: geerlingguy.mysql
     - role: geerlingguy.sonar
 
+
   post_tasks:
     - name: Ensure SonarQube is running.
       uri:
