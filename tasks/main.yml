@@ -1,6 +1,7 @@
 ---
 - name: Configure database {{ sonar_database_provider }}
   include: "configure-database-{{ sonar_database_provider }}.yml"
+  when: sonar_configure_local_database
 
 - name: Create user to run Sonar.
   user:
