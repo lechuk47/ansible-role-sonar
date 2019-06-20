@@ -1,37 +1,16 @@
 ---
-- name: debug db
-  debug:
-    var: sonar_database_provider
-
-- block:
-
-  - name: Define sonar jdbc username
-    set_fact:
-      sonar_jdbc_username: "{{ sonar_psql_username }}"
-
-  - name: Define sonar jdbc  password
-    set_fact:
-      sonar_jdbc_password: "{{ sonar_psql_password }}"
-
-  - name: Define sonar jdbc connection string
-    set_fact:
-      sonar_jdbc_conn: "jdbc:postgresql://{{ sonar_psql_host }}/{{ sonar_psql_database }}"
+- name: Define sonar jdbc properties for PostgreSQL
+  set_fact:
+    sonar_jdbc_username: "{{ sonar_psql_username }}"
+    sonar_jdbc_password: "{{ sonar_psql_password }}"
+    sonar_jdbc_conn: "jdbc:postgresql://{{ sonar_psql_host }}/{{ sonar_psql_database }}"
   when: sonar_database_provider == 'postgresql'
 
-
-- block:
-  - name: Define sonar jdbc username
-    set_fact:
-      sonar_jdbc_username: "{{ sonar_mysql_username }}"
-
-  - name: Define sonar jdbc  password
-    set_fact:
-      sonar_jdbc_password: "{{ sonar_mysql_password }}"
-
-  - name: Define sonar jdbc connection string
-    set_fact:
-      sonar_jdbc_conn: "jdbc:mysql://{{ sonar_mysql_host }}:{{ sonar_mysql_port }}/{{ sonar_mysql_database }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"
-
+- name: Define sonar jdbc properties for MySQL
+  set_fact:
+    sonar_jdbc_username: "{{ sonar_mysql_username }}"
+    sonar_jdbc_password: "{{ sonar_mysql_password }}"
+    sonar_jdbc_conn: "jdbc:mysql://{{ sonar_mysql_host }}:{{ sonar_mysql_port }}/{{ sonar_mysql_database }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"
   when: sonar_database_provider == 'mysql'
 
 
