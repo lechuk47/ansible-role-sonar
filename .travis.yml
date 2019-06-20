@@ -15,6 +15,11 @@ env:
       MOLECULE_PLAYBOOK: playbook-latest.yml
     - MOLECULE_DISTRO: ubuntu1604
       MOLECULE_PLAYBOOK: playbook-latest.yml
+    - MOLECULE_DISTRO: centos7
+      MOLECULE_PLAYBOOK: playbook-postgres.yml
+    - MOLECULE_DISTRO: ubuntu1604
+      MOLECULE_PLAYBOOK: playbook-postgres.yml
+
 
     # Web Context.
     - MOLECULE_DISTRO: ubuntu1604
