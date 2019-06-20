@@ -1,0 +1,74 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    # Latest version of SonarQube, from http://www.sonarqube.org/downloads/
+    sonar_version: 7.7
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+      changed_when: false
+
+    - name: Install dependencies.
+      package:
+        name:
+          - curl
+          - unzip
+        state: present
+
+    - name: Add repository for OpenJDK 8 (Ubuntu 14).
+      apt_repository: repo='ppa:openjdk-r/ppa'
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_distribution_version == "14.04"
+
+    - name: Install the PostgreSQL repo (RedHat).
+      yum:
+        name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Override variables for Postgres (RedHat).
+      set_fact:
+      #PostgreSQL Configuration
+        postgresql_version: "9.6"
+        postgresql_packages:
+          - postgresql96-server.x86_64
+        postgresql_daemon: postgresql-9.6
+
+        postgresql_hba_entries:
+          - {type: local, database: all, user: postgres, auth_method: peer}
+          - {type: host, database: sonar, user: sonar, address: '127.0.0.1/32', auth_method: md5}
+
+          postgresql_config_path: /var/lib/pgsql/9.6/data
+          postgresql_data_dir: /var/lib/pgsql/9.6/data
+          postgresql_bin_path: /usr/pgsql-9.6/bin
+
+
+  roles:
+    - role: geerlingguy.java
+      when: "ansible_os_family == 'RedHat'"
+      java_packages:
+        - java-1.8.0-openjdk
+
+    - role: geerlingguy.java
+      when: "ansible_os_family == 'Debian'"
+      java_packages:
+        - openjdk-8-jdk
+
+    - role: geerlingguy.postgresql
+    - role: geerlingguy.sonar
+
+  post_tasks:
+    - name: Ensure SonarQube is running.
+      uri:
+        url: "http://127.0.0.1:9000/"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1
