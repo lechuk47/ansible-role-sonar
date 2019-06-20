@@ -2,6 +2,14 @@
 - name: Configure database {{ sonar_database_provider }}
   include: "configure-database-{{ sonar_database_provider }}.yml"
 
+
+
+- name: Create user to run Sonar.
+  user:
+    name: "{{ sonar_username }}"
+    shell: /bin/false
+    create_home: no
+
 - name: Download Sonar.
   get_url:
     url: "{{ sonar_download_url }}"
@@ -14,10 +22,11 @@
     dest: /usr/local/
     copy: false
     creates: /usr/local/sonar/COPYING
+    owner: "{{ sonar_username }}"
 
 - name: Move Sonar into place.
   command: >
-    mv /usr/local/{{ sonar_version_directory }} /usr/local/sonar
+    mv -p /usr/local/{{ sonar_version_directory }} /usr/local/sonar
     creates=/usr/local/sonar/COPYING
 
 - name: Configure sonar for {{ sonar_database_provider }}
@@ -48,7 +57,10 @@
   when: "ansible_service_mgr == 'systemd'"
 
 - name: Ensure Sonar is running and set to start on boot.
-  service: name=sonar state=started enabled=yes
+  service:
+    name: sonar
+    state: started se
+    enabled: yes
 
 - name: Allow Sonar time to build on first start.
   pause: seconds=180

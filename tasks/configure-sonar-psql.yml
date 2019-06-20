@@ -1,5 +1,5 @@
 ---
-- name: Configure SonarQube JDBC settings for MySQL.
+- name: Configure SonarQube JDBC settings for PostgreSQL.
   lineinfile:
     dest: /usr/local/sonar/conf/sonar.properties
     regexp: "{{ item.regexp }}"

@@ -9,6 +9,7 @@ sonar_version_directory: "sonarqube-{{ sonar_version }}"
 
 sonar_web_context: ''
 
+sonar_username: sonar
 
 sonar_database_provider: mysql
 
