@@ -1,0 +1,54 @@
+---
+- name: debug db
+  debug:
+    var: sonar_database_provider
+
+- block:
+
+  - name: Define sonar jdbc username
+    set_fact:
+      sonar_jdbc_username: "{{ sonar_psql_username }}"
+
+  - name: Define sonar jdbc  password
+    set_fact:
+      sonar_jdbc_password: "{{ sonar_psql_password }}"
+
+  - name: Define sonar jdbc connection string
+    set_fact:
+      sonar_jdbc_conn: "jdbc:postgresql://{{ sonar_psql_host }}/{{ sonar_psql_database }}"
+  when: sonar_database_provider == 'postgresql'
+
+
+- block:
+  - name: Define sonar jdbc username
+    set_fact:
+      sonar_jdbc_username: "{{ sonar_mysql_username }}"
+
+  - name: Define sonar jdbc  password
+    set_fact:
+      sonar_jdbc_password: "{{ sonar_mysql_password }}"
+
+  - name: Define sonar jdbc connection string
+    set_fact:
+      sonar_jdbc_conn: "jdbc:mysql://{{ sonar_mysql_host }}:{{ sonar_mysql_port }}/{{ sonar_mysql_database }}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"
+
+  when: sonar_database_provider == 'mysql'
+
+
+- name: Configure SonarQube JDBC settings
+  lineinfile:
+    dest: /usr/local/sonar/conf/sonar.properties
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  notify: restart sonar
+  no_log: "{{ item.no_log | default('no') }}"
+  with_items:
+    - regexp: "^sonar.jdbc.username"
+      line: "sonar.jdbc.username={{ sonar_jdbc_username }}"
+    - regexp: "^sonar.jdbc.password"
+      line: "sonar.jdbc.password={{ sonar_jdbc_password }}"
+    - regexp: "^sonar.jdbc.url"
+      line: "sonar.jdbc.url={{ sonar_jdbc_conn }}"
+    - regexp: "^sonar.web.context"
+      line: "sonar.web.context={{ sonar_web_context }}"
+

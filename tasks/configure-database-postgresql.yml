@@ -1,0 +1,25 @@
+---
+- postgresql_db:
+    name: "{{ sonar_psql_database }}"
+  become: true
+  become_user: "{{ postgresql_user }}"
+
+- name: Create PostgreSQL User for sonar
+  postgresql_user:
+    name: "{{ sonar_psql_username }}"
+    password: "{{ sonar_psql_password }}"
+    db: "{{ sonar_psql_database }}"
+    state: present
+  no_log: true
+  become: true
+  become_user: "{{ postgresql_user }}"
+  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
+  vars:
+    ansible_ssh_pipelining: true
+
+- name: Enable sonar user in pg_hba file
+  lineinfile:
+    regex: "host {{ sonar_username }}.*"
+    line: "host  {{ sonar_psql_database }} {{ sonar_username }} 127.0.0.1/32  md5"
+    dest: "{{ postgresql_config_path }}/pg_hba.conf"
+

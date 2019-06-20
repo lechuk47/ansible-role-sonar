@@ -25,8 +25,8 @@ Directory where downloaded files will be temporarily stored.
 
 Controls whether to validate certificates when downloading SonarQube.
 
-    sonar_download_url: http://dist.sonar.codehaus.org/sonarqube-4.5.4.zip
-    sonar_version_directory: sonarqube-4.5.4
+    sonar_download_url: https://binaries.sonarsource.com/CommercialDistribution/sonarqube-developer/sonarqube-developer-7.7.zip
+    sonar_version_directory: sonarqube-7.7
 
 The URL from which SonarQube will be downloaded, and the resulting directory name (should match the download archive, without the archive extension).
 
@@ -36,11 +36,11 @@ The value of `sonar.web.context`. Setting this to something like `/sonar` allows
 
     sonar_mysql_username: sonar
     sonar_mysql_password: sonar
-    
+
     sonar_mysql_host: localhost
     sonar_mysql_port: "3306"
     sonar_mysql_database: sonar
-    
+
     sonar_mysql_allowed_hosts:
       - 127.0.0.1
       - ::1
@@ -48,12 +48,20 @@ The value of `sonar.web.context`. Setting this to something like `/sonar` allows
 
 JDBC settings for a connection to a MySQL database. Defaults presume the database resides on localhost and is only accessible on the SonarQube server itself.
 
+    sonar_psql_username: sonar
+    sonar_psql_password: sonar
+
+    sonar_psql_host: localhost
+    sonar_psql_port: "5432"
+    sonar_psql_database: sonar
+
+JDBC settings for a connection to a PostgreSQL database. Defaults presume the database resides on localhost and is only accessible on the SonarQube server itself.
 ## Dependencies
 
   - geerlingguy.java
   - geerlingguy.mysql
   - geerlingguy.postgres
-  
+
 ## Example Playbook
 
     - hosts: all
