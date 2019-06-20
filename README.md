@@ -60,7 +60,7 @@ JDBC settings for a connection to a PostgreSQL database. Defaults presume the da
 
   - geerlingguy.java
   - geerlingguy.mysql
-  - geerlingguy.postgres
+  - geerlingguy.postgresql
 
 ## Example Playbook
 
