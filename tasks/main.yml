@@ -2,8 +2,6 @@
 - name: Configure database {{ sonar_database_provider }}
   include: "configure-database-{{ sonar_database_provider }}.yml"
 
-
-
 - name: Create user to run Sonar.
   user:
     name: "{{ sonar_username }}"
@@ -23,15 +21,15 @@
     copy: false
     creates: /usr/local/sonar/COPYING
     owner: "{{ sonar_username }}"
+    group: "{{ sonar_group }}"
 
 - name: Move Sonar into place.
   command: >
     mv /usr/local/{{ sonar_version_directory }} /usr/local/sonar
     creates=/usr/local/sonar/COPYING
 
-- name: Configure sonar for {{ sonar_database_provider }}
-  include: "configure-sonar-{{ sonar_database_provider }}.yml"
-
+- name: Configure sonar jdbc for {{ sonar_database_provider }}
+  include: "configure-sonar-jdbc.yml"
 
 - name: Symlink sonar bin.
   file:
@@ -40,27 +38,39 @@
     state: link
   register: sonar_symlink
 
-- name: Add sonar as init script for service management.
-  file:
-    src: /usr/local/sonar/bin/linux-x86-64/sonar.sh
-    dest: /etc/init.d/sonar
-    state: link
+- block:
+  - name: Add sonar as init script for service management.
+    file:
+      src: /usr/local/sonar/bin/linux-x86-64/sonar.sh
+      dest: /etc/init.d/sonar
+      state: link
+
+  - name: Ensure Sonar is running and set to start on boot.
+    service:
+      name: sonar
+      state: started
+      enabled: yes
   when: "ansible_service_mgr != 'systemd'"
 
-- name: Copy SonarQube systemd unit file into place (for systemd systems).
-  template:
-    src: sonar.unit.j2
-    dest: /etc/systemd/system/sonar.service
-    owner: root
-    group: root
-    mode: 0755
-  when: "ansible_service_mgr == 'systemd'"
+- block:
+  - name: Copy SonarQube systemd unit file into place (for systemd systems).
+    template:
+      src: sonar.unit.j2
+      dest: /etc/systemd/system/sonar.service
+      owner: root
+      group: root
+      mode: 0755
+    register: systemd_service
 
-- name: Ensure Sonar is running and set to start on boot.
-  service:
-    name: sonar
-    state: started se
-    enabled: yes
+  - name: Copy SonarQube systemd unit file into place (for systemd systems).
+    systemd:
+      name: sonar
+      daemon_reload: yes
+      enabled: yes
+      state: started
+    when: systemd_service.changed
+
+  when: "ansible_service_mgr == 'systemd'"
 
 - name: Allow Sonar time to build on first start.
   pause: seconds=180

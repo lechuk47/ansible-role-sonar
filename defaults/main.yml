@@ -10,6 +10,7 @@ sonar_version_directory: "sonarqube-{{ sonar_version }}"
 sonar_web_context: ''
 
 sonar_username: sonar
+sonar_group: sonar
 
 sonar_database_provider: mysql
 
@@ -26,7 +27,7 @@ sonar_mysql_allowed_hosts:
   - "::1"
   - "localhost"
 
-# MySQL database connection details.
+# PostgreSQL database connection details.
 sonar_psql_username: sonar
 sonar_psql_password: sonar
 
